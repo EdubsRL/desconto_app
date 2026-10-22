@@ -1,26 +1,8 @@
-from src.controllers.pedido_controller import PedidoController
-from src.database.connection import DatabaseConnection
-from src.models.desconto import DescontoNormal, DescontoPremium, DescontoVIP
-from src.models.pedido import Pedido
-from src.repositories.pedido_repository import PedidoRepository
-from src.services.pedido_service import PedidoService
+from src.app.use_cases.criar_pedido import CriarPedido
 
 if __name__ == "__main__":
-    # Montando as camadas: database -> repository -> service -> controller
-    database = DatabaseConnection()
-    repo = PedidoRepository(database)
-    service = PedidoService(repo)
-    controller = PedidoController(service)
+    criar_pedido = CriarPedido()
 
-    pedido1 = Pedido("Cliente 1", DescontoNormal())
-    pedido1.valor_original = 100.0
-    pedido2 = Pedido("Cliente 2", DescontoVIP())
-    pedido2.valor_original = 100.0
-    pedido3 = Pedido("Cliente 3", DescontoPremium())
-    pedido3.valor_original = 100.0
-
-    controller.adicionar_pedido(pedido1)
-    controller.adicionar_pedido(pedido2)
-    controller.adicionar_pedido(pedido3)
-
-    controller.processar_pedidos()
+    pedido = criar_pedido.executar("Leonardo", 100.0, "vip")
+    print(f"Cliente: {pedido.cliente}")
+    print(f"Valor final: {pedido.valor_final()}")
