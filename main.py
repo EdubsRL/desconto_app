@@ -1,23 +1,27 @@
 from src.models.desconto import DescontoNormal, DescontoPremium, DescontoVIP
 from src.models.pedido import Pedido
+from src.repositories.pedido_repository import PedidoRepository
 from src.services.pedido_service import PedidoService
 
 if __name__ == "__main__":
-    service = PedidoService()
+    # Configuração do repositório e do serviço
+    repo = PedidoRepository()
+    service = PedidoService(repo)
 
-    # Criando pedidos e aplicando descontos
-    pedido1 = Pedido("Cliente A", DescontoNormal())
-    pedido1.valor_original = 100.0  # Definindo o valor original do pedido
+    # Criando pedidos com desconto
+    pedido1 = Pedido(cliente="Leonardo", desconto=DescontoNormal())
+    pedido1.valor_original = 100.0
 
-    pedido2 = Pedido("Cliente B", DescontoVIP())
-    pedido2.valor_original = 200.0
+    pedido2 = Pedido(cliente="Cardia", desconto=DescontoVIP())
+    pedido2.valor_original = 100.0
 
-    pedido3 = Pedido("Cliente C", DescontoPremium())
-    pedido3.valor_original = 300.0
+    pedido3 = Pedido(cliente="Da Cruz", desconto=DescontoPremium())
+    pedido3.valor_original = 100.0
 
-    # Adicionando e processando os pedidos
+    # Salvando os pedidos (o serviço usa o repositório)
     service.adicionar_pedido(pedido1)
     service.adicionar_pedido(pedido2)
     service.adicionar_pedido(pedido3)
 
+    # Processando os pedidos
     service.processar_pedidos()
