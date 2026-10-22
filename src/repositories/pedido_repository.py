@@ -1,17 +1,18 @@
+from src.database.connection import DatabaseConnection
 from src.models.pedido import Pedido
 
 
 class PedidoRepository:
     """Classe de repositório para armazenar e gerenciar pedidos."""
 
-    def __init__(self) -> None:
-        """Começa sem pedidos armazenados."""
-        self.pedidos: list[Pedido] = []
+    def __init__(self, database: DatabaseConnection) -> None:
+        """Recebe a conexão com o banco de dados."""
+        self.database = database
 
     def adicionar_pedido(self, pedido: Pedido) -> None:
-        """Salva um pedido."""
-        self.pedidos.append(pedido)
+        """Salva um pedido no banco."""
+        self.database.pedidos.append(pedido)
 
     def listar_pedidos(self) -> list[Pedido]:
-        """Retorna todos os pedidos salvos."""
-        return self.pedidos
+        """Retorna todos os pedidos do banco."""
+        return self.database.pedidos

@@ -1,12 +1,14 @@
 from src.controllers.pedido_controller import PedidoController
+from src.database.connection import DatabaseConnection
 from src.models.desconto import DescontoNormal, DescontoPremium, DescontoVIP
 from src.models.pedido import Pedido
 from src.repositories.pedido_repository import PedidoRepository
 from src.services.pedido_service import PedidoService
 
 if __name__ == "__main__":
-    # Montando as camadas: repository -> service -> controller
-    repo = PedidoRepository()
+    # Montando as camadas: database -> repository -> service -> controller
+    database = DatabaseConnection()
+    repo = PedidoRepository(database)
     service = PedidoService(repo)
     controller = PedidoController(service)
 
