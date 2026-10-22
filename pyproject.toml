@@ -18,3 +18,10 @@ convention = "google"
 python_version = "3.11"
 strict = true
 explicit_package_bases = true
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
