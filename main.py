@@ -1,26 +1,31 @@
-from src.controllers.pedido_controller import PedidoController
-from src.database.connection import DatabaseConnection
-from src.models.desconto import DescontoNormal, DescontoPremium, DescontoVIP
-from src.models.pedido import Pedido
-from src.repositories.pedido_repository import PedidoRepository
-from src.services.pedido_service import PedidoService
+"""Ponto de entrada: monta as dependências (de fora para dentro) e executa o fluxo."""
+
+from src.app.adapters.controllers.pedido_controller import PedidoController
+from src.app.adapters.repositories.memory_pedido_repository import MemoryPedidoRepository
+from src.app.frameworks.database.memory_database import MemoryDatabase
+from src.app.presenters.pedido_presenter import PedidoPresenter
+from src.app.use_cases.criar_pedido import CriarPedido
 
 if __name__ == "__main__":
-    # Montando as camadas: database -> repository -> service -> controller
-    database = DatabaseConnection()
-    repo = PedidoRepository(database)
-    service = PedidoService(repo)
-    controller = PedidoController(service)
+    # Frameworks & Drivers -> Adapters -> Use Cases (a dependência aponta para dentro)
+    database = MemoryDatabase()
+    repository = MemoryPedidoRepository(database)
+    criar_pedido = CriarPedido(repository)
+    presenter = PedidoPresenter()
+    controller = PedidoController(criar_pedido, presenter)
 
-    pedido1 = Pedido("Cliente 1", DescontoNormal())
-    pedido1.valor_original = 100.0
-    pedido2 = Pedido("Cliente 2", DescontoVIP())
-    pedido2.valor_original = 100.0
-    pedido3 = Pedido("Cliente 3", DescontoPremium())
-    pedido3.valor_original = 100.0
+    # Fluxo completo: criar pedidos e calcular o desconto
+    print("=== Pedidos criados ===")
+    print(controller.criar_pedido("Leonardo", 100.0, "normal"))
+    print(controller.criar_pedido("Cardia", 200.0, "vip"))
+    print(controller.criar_pedido("Da Cruz", 300.0, "premium"))
 
-    controller.adicionar_pedido(pedido1)
-    controller.adicionar_pedido(pedido2)
-    controller.adicionar_pedido(pedido3)
-
-    controller.processar_pedidos()
+    # Listar todos os pedidos já realizados
+    print("\n=== Todos os pedidos ===")
+    for pedido in controller.listar_pedidos():
+        print(
+            f"{pedido['cliente']:<10} | {pedido['tipo_desconto']:<8} | "
+            f"original: R$ {pedido['valor_original']:>7.2f} | "
+            f"desconto: R$ {pedido['valor_desconto']:>6.2f} | "
+            f"final: R$ {pedido['valor_final']:>7.2f}"
+        )

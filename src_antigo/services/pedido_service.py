@@ -1,5 +1,5 @@
-from src.models.pedido import Pedido
-from src.repositories.pedido_repository import PedidoRepository
+from src_antigo.models.pedido import Pedido
+from src_antigo.repositories.pedido_repository import PedidoRepository
 
 
 class PedidoService:
