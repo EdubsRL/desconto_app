@@ -1,4 +1,5 @@
 import abc
+from typing import Any
 
 from src.app.entities.pedido import Pedido
 
@@ -10,9 +11,9 @@ class IPedidoGateway(abc.ABC):
     """
 
     @abc.abstractmethod
-    def salvar(self, pedido: Pedido) -> None:
-        """Persiste um pedido."""
+    def salvar(self, pedido: Pedido, tipo_desconto: str) -> None:
+        """Persiste um pedido junto com o tipo de desconto escolhido."""
 
     @abc.abstractmethod
-    def listar(self) -> list[Pedido]:
-        """Retorna todos os pedidos persistidos."""
+    def listar(self) -> list[dict[str, Any]]:
+        """Retorna os registros salvos: {"pedido": Pedido, "tipo_desconto": str}."""
